@@ -1,0 +1,1 @@
+ALTER TABLE `transactions` ADD `transfer_to_account_id` text REFERENCES accounts(id);

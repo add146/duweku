@@ -1,0 +1,27 @@
+name = "duweku-api"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "duweku-db"
+database_id = "local"
+migrations_dir = "drizzle"
+
+# R2 Object Storage (for receipts, exports)
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "duweku-storage"
+
+# Environment Variables (set via wrangler secret)
+# JWT_SECRET
+# ENCRYPTION_SECRET
+# GEMINI_API_KEY (global key for Pro plan)
+# TELEGRAM_BOT_TOKEN
+# MIDTRANS_SERVER_KEY
+# MIDTRANS_CLIENT_KEY
+
+[dev]
+port = 8787
