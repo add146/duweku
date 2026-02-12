@@ -5,8 +5,11 @@ import Onboarding from '@/pages/Onboarding';
 import Dashboard from '@/pages/Dashboard';
 import Transactions from '@/pages/Transactions';
 import Accounts from '@/pages/Accounts';
+import Reports from '@/pages/Reports';
 import Settings from '@/pages/Settings';
+import Family from '@/pages/Family';
 import AppLayout from '@/components/layout/AppLayout';
+import { WorkspaceProvider } from '@/context/WorkspaceContext';
 
 function App() {
   return (
@@ -16,10 +19,16 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/onboarding" element={<Onboarding />} />
 
-        <Route element={<AppLayout />}>
+        <Route element={
+          <WorkspaceProvider>
+            <AppLayout />
+          </WorkspaceProvider>
+        }>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/accounts" element={<Accounts />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/members" element={<Family />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
 

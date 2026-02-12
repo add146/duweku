@@ -7,9 +7,12 @@ import {
     Receipt,
     Settings,
     LogOut,
-    Menu
+    Menu,
+    Users,
+    BarChart3
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import WorkspaceSwitcher from '@/components/layout/WorkspaceSwitcher';
 
 export default function AppLayout() {
     const navigate = useNavigate();
@@ -37,6 +40,8 @@ export default function AppLayout() {
         { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
         { label: 'Transactions', icon: Receipt, href: '/transactions' },
         { label: 'Accounts', icon: Wallet, href: '/accounts' },
+        { label: 'Reports', icon: BarChart3, href: '/reports' },
+        { label: 'Members', icon: Users, href: '/members' },
         { label: 'Settings', icon: Settings, href: '/settings' },
     ];
 
@@ -52,7 +57,11 @@ export default function AppLayout() {
                         <span className="text-xl font-bold text-primary">DuweKu</span>
                     </div>
 
-                    <nav className="flex-1 px-4 py-4 space-y-1">
+                    <div className="px-4 pt-4">
+                        <WorkspaceSwitcher />
+                    </div>
+
+                    <nav className="flex-1 px-4 pb-4 space-y-1">
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}

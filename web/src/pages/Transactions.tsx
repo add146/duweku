@@ -6,35 +6,19 @@ import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import TransactionDialog from '@/components/transactions/TransactionDialog';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 export default function Transactions() {
+    const { selectedWorkspace } = useWorkspace();
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [workspaces, setWorkspaces] = useState<any[]>([]);
-    const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
         if (selectedWorkspace) {
-            fetchTransactions(selectedWorkspace);
+            fetchTransactions(selectedWorkspace.id);
         }
     }, [selectedWorkspace]);
-
-    const fetchWorkspaces = async () => {
-        try {
-            const res = await apiFetch<{ data: any[] }>('/workspaces');
-            setWorkspaces(res.data);
-            if (res.data.length > 0) {
-                setSelectedWorkspace(res.data[0].id);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const fetchTransactions = async (workspaceId: string) => {
         setLoading(true);
@@ -57,29 +41,22 @@ export default function Transactions() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure?")) return;
+        if (!selectedWorkspace || !confirm("Are you sure?")) return;
         try {
-            await apiFetch(`/workspaces/${selectedWorkspace}/transactions/${id}`, { method: 'DELETE' });
-            fetchTransactions(selectedWorkspace);
+            await apiFetch(`/workspaces/${selectedWorkspace.id}/transactions/${id}`, { method: 'DELETE' });
+            fetchTransactions(selectedWorkspace.id);
         } catch (e) {
             alert("Failed to delete");
         }
     };
+
+    if (!selectedWorkspace) return <div>Please select a workspace.</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-bold tracking-tight">Transactions</h2>
                 <div className="flex gap-2">
-                    <select
-                        className="border rounded p-1"
-                        value={selectedWorkspace}
-                        onChange={(e) => setSelectedWorkspace(e.target.value)}
-                    >
-                        {workspaces.map(w => (
-                            <option key={w.id} value={w.id}>{w.name}</option>
-                        ))}
-                    </select>
                     <Button onClick={() => setIsDialogOpen(true)}>Add Transaction</Button>
                 </div>
             </div>
@@ -87,8 +64,8 @@ export default function Transactions() {
             <TransactionDialog
                 isOpen={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
-                onSuccess={() => fetchTransactions(selectedWorkspace)}
-                workspaceId={selectedWorkspace}
+                onSuccess={() => fetchTransactions(selectedWorkspace.id)}
+                workspaceId={selectedWorkspace.id}
             />
 
             <div className="flex gap-4">

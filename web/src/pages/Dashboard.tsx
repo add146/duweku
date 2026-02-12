@@ -1,36 +1,17 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '@/lib/api';
-
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 export default function Dashboard() {
-    const [workspaces, setWorkspaces] = useState<any[]>([]);
-    const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
+    const { selectedWorkspace, loading: workspaceLoading } = useWorkspace();
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
         if (selectedWorkspace) {
-            fetchStats(selectedWorkspace);
+            fetchStats(selectedWorkspace.id);
         }
     }, [selectedWorkspace]);
-
-    const fetchWorkspaces = async () => {
-        try {
-            const res = await apiFetch<{ data: any[] }>('/workspaces');
-            setWorkspaces(res.data);
-            if (res.data.length > 0) {
-                setSelectedWorkspace(res.data[0].id);
-            }
-        } catch (error) {
-            console.error("Failed to fetch workspaces", error);
-        } finally {
-            if (workspaces.length === 0) setLoading(false);
-        }
-    };
 
     const fetchStats = async (workspaceId: string) => {
         setLoading(true);
@@ -52,27 +33,14 @@ export default function Dashboard() {
         }).format(amount);
     };
 
-    if (!selectedWorkspace && !loading && workspaces.length === 0) {
-        return <div className="p-8">Please create a workspace first.</div>;
-    }
+    if (workspaceLoading) return <div className="p-8">Loading workspace...</div>;
+    if (!selectedWorkspace) return <div className="p-8">Please create or select a workspace.</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-                <div>
-                    {/* Workspace Switcher Placeholder */}
-                    <span className="text-sm text-muted-foreground mr-2">Workspace:</span>
-                    <select
-                        className="border rounded p-1"
-                        value={selectedWorkspace}
-                        onChange={(e) => setSelectedWorkspace(e.target.value)}
-                    >
-                        {workspaces.map(w => (
-                            <option key={w.id} value={w.id}>{w.name}</option>
-                        ))}
-                    </select>
-                </div>
+                {/* Workspace switcher moved to Sidebar */}
             </div>
 
             {stats ? (

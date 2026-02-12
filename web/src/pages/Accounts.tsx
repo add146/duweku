@@ -2,35 +2,19 @@ import { useState, useEffect } from 'react';
 import { apiFetch } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import AccountDialog from '@/components/accounts/AccountDialog';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 export default function Accounts() {
+    const { selectedWorkspace } = useWorkspace();
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
-    const [workspaces, setWorkspaces] = useState<any[]>([]);
-    const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     useEffect(() => {
-        fetchWorkspaces();
-    }, []);
-
-    useEffect(() => {
         if (selectedWorkspace) {
-            fetchAccounts(selectedWorkspace);
+            fetchAccounts(selectedWorkspace.id);
         }
     }, [selectedWorkspace]);
-
-    const fetchWorkspaces = async () => {
-        try {
-            const res = await apiFetch<{ data: any[] }>('/workspaces');
-            setWorkspaces(res.data);
-            if (res.data.length > 0) {
-                setSelectedWorkspace(res.data[0].id);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const fetchAccounts = async (workspaceId: string) => {
         setLoading(true);
@@ -52,20 +36,13 @@ export default function Accounts() {
         }).format(amount);
     };
 
+    if (!selectedWorkspace) return <div>Please select a workspace.</div>;
+
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <h2 className="text-3xl font-bold tracking-tight">Accounts</h2>
                 <div className="flex gap-2">
-                    <select
-                        className="border rounded p-1"
-                        value={selectedWorkspace}
-                        onChange={(e) => setSelectedWorkspace(e.target.value)}
-                    >
-                        {workspaces.map(w => (
-                            <option key={w.id} value={w.id}>{w.name}</option>
-                        ))}
-                    </select>
                     <Button onClick={() => setIsDialogOpen(true)}>New Account</Button>
                 </div>
             </div>
@@ -73,8 +50,8 @@ export default function Accounts() {
             <AccountDialog
                 isOpen={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
-                onSuccess={() => fetchAccounts(selectedWorkspace)}
-                workspaceId={selectedWorkspace}
+                onSuccess={() => fetchAccounts(selectedWorkspace.id)}
+                workspaceId={selectedWorkspace.id}
             />
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
