@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+
 // Input component needs to be created, or use standard input with class
 // I'll assume I need to create Input component too or just use HTML for MVP.
 // Let's create `components/ui/input.tsx` next.
