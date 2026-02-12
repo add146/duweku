@@ -8,6 +8,8 @@ import Accounts from '@/pages/Accounts';
 import Reports from '@/pages/Reports';
 import Settings from '@/pages/Settings';
 import Family from '@/pages/Family';
+import Plans from '@/pages/Plans';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AppLayout from '@/components/layout/AppLayout';
 import { WorkspaceProvider } from '@/context/WorkspaceContext';
 
@@ -29,7 +31,9 @@ function App() {
           <Route path="/accounts" element={<Accounts />} />
           <Route path="/reports" element={<Reports />} />
           <Route path="/members" element={<Family />} />
+          <Route path="/plans" element={<Plans />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

@@ -9,7 +9,8 @@ import {
     LogOut,
     Menu,
     Users,
-    BarChart3
+    BarChart3,
+    CreditCard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import WorkspaceSwitcher from '@/components/layout/WorkspaceSwitcher';
@@ -43,6 +44,7 @@ export default function AppLayout() {
         { label: 'Accounts', icon: Wallet, href: '/accounts' },
         { label: 'Reports', icon: BarChart3, href: '/reports' },
         { label: 'Members', icon: Users, href: '/members' },
+        { label: 'Pricing', icon: CreditCard, href: '/plans' },
         { label: 'Settings', icon: Settings, href: '/settings' },
     ];
 
