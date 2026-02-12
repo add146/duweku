@@ -5,7 +5,6 @@ import { useWorkspace } from '@/context/WorkspaceContext';
 export default function Dashboard() {
     const { selectedWorkspace, loading: workspaceLoading } = useWorkspace();
     const [stats, setStats] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (selectedWorkspace) {
@@ -14,14 +13,11 @@ export default function Dashboard() {
     }, [selectedWorkspace]);
 
     const fetchStats = async (workspaceId: string) => {
-        setLoading(true);
         try {
             const res = await apiFetch<any>(`/workspaces/${workspaceId}/stats`);
             setStats(res);
         } catch (error) {
             console.error("Failed to fetch stats", error);
-        } finally {
-            setLoading(false);
         }
     };
 
