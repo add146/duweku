@@ -13,7 +13,6 @@ export default function Transactions() {
     const [workspaces, setWorkspaces] = useState<any[]>([]);
     const [selectedWorkspace, setSelectedWorkspace] = useState<string>('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
         fetchWorkspaces();

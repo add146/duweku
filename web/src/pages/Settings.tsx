@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 export default function Settings() {
     const [user, setUser] = useState<any>(null);
     const [telegramLink, setTelegramLink] = useState('');
-    const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
 
     const { register, handleSubmit, setValue } = useForm();
