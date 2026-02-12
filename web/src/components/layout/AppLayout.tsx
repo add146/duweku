@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, Outlet, Link } from 'react-router-dom';
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
     LayoutDashboard,
@@ -16,6 +16,7 @@ import WorkspaceSwitcher from '@/components/layout/WorkspaceSwitcher';
 
 export default function AppLayout() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
 
@@ -49,45 +50,68 @@ export default function AppLayout() {
         <div className="flex min-h-screen bg-muted/40">
             {/* Sidebar */}
             <aside className={cn(
-                "fixed inset-y-0 left-0 z-10 w-64 bg-background border-r transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static",
+                "fixed inset-y-0 left-0 z-20 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out md:translate-x-0 md:static flex flex-col",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="h-full flex flex-col">
-                    <div className="h-14 flex items-center px-6 border-b">
-                        <span className="text-xl font-bold text-primary">DuweKu</span>
+                <div className="h-20 flex items-center px-8 border-b border-border/50">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl shadow-lg shadow-primary/30">
+                            D
+                        </div>
+                        <span className="text-2xl font-bold tracking-tight text-foreground">DuweKu</span>
                     </div>
+                </div>
 
-                    <div className="px-4 pt-4">
+                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+                    <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Menu Utama</p>
+                    {navItems.slice(0, 4).map((item) => (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors hover:bg-muted text-muted-foreground hover:text-primary",
+                                location.pathname === item.href && "bg-primary/10 text-primary"
+                            )}
+                            onClick={() => setSidebarOpen(false)}
+                        >
+                            <item.icon className="h-5 w-5" />
+                            {item.label}
+                        </Link>
+                    ))}
+
+                    <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-8 mb-2">Workspace</p>
+                    <div className="px-4 mb-4">
                         <WorkspaceSwitcher />
                     </div>
 
-                    <nav className="flex-1 px-4 pb-4 space-y-1">
-                        {navItems.map((item) => (
-                            <Link
-                                key={item.href}
-                                to={item.href}
-                                className="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md hover:bg-muted transition-colors"
-                                onClick={() => setSidebarOpen(false)}
-                            >
-                                <item.icon className="h-4 w-4" />
-                                {item.label}
-                            </Link>
-                        ))}
-                    </nav>
+                    <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4 mb-2">Sistem</p>
+                    {navItems.slice(4).map((item) => (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors hover:bg-muted text-muted-foreground hover:text-primary",
+                                location.pathname === item.href && "bg-primary/10 text-primary"
+                            )}
+                            onClick={() => setSidebarOpen(false)}
+                        >
+                            <item.icon className="h-5 w-5" />
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
 
-                    <div className="p-4 border-t">
-                        <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold">
-                                {user.name.charAt(0)}
-                            </div>
-                            <div className="flex-1 overflow-hidden">
-                                <p className="text-sm font-medium truncate">{user.name}</p>
-                                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-                            </div>
+                <div className="p-4 border-t border-border/50">
+                    <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-muted cursor-pointer transition-colors">
+                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold border-2 border-background shadow-sm">
+                            {user.name.charAt(0)}
                         </div>
-                        <Button variant="ghost" className="w-full justify-start gap-3" onClick={handleLogout}>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-foreground truncate">{user.name}</p>
+                            <p className="text-xs text-muted-foreground truncate">Free Plan</p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground" onClick={handleLogout}>
                             <LogOut className="h-4 w-4" />
-                            Logout
                         </Button>
                     </div>
                 </div>
