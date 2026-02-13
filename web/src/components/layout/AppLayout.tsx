@@ -45,8 +45,8 @@ export default function AppLayout() {
 
     const navItems = [
         { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { label: 'Transactions', icon: Receipt, href: '/transactions' },
         { label: 'Accounts', icon: Wallet, href: '/accounts' },
+        { label: 'Transactions', icon: Receipt, href: '/transactions' },
         { label: 'Reports', icon: BarChart3, href: '/reports' },
         { label: 'Members', icon: Users, href: '/members' },
         { label: 'Pricing', icon: CreditCard, href: '/plans' },
@@ -172,11 +172,10 @@ export default function AppLayout() {
                     )
                 })}
 
-                {/* Central Add Button */}
                 <div className="relative -top-6 flex-1 flex justify-center">
                     <button
                         onClick={() => setIsTxOpen(true)}
-                        className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg shadow-green-500/40 hover:bg-green-600 active:scale-95 transition-all"
+                        className="w-14 h-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/40 hover:opacity-90 active:scale-95 transition-all"
                     >
                         <Plus className="h-8 w-8 stroke-[3px]" />
                     </button>
