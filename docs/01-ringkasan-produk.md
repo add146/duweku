@@ -135,9 +135,9 @@ DuweKu menawarkan **2 model paket harga** berdasarkan penggunaan AI:
 
 ### 🟢 Core Features (MVP)
 
-- [ ] Registrasi & login (email/password)
-- [ ] **Sistem role 3 tingkat** (Super Admin, Owner, Member)
-- [ ] **Admin panel** — manage user, statistik platform, settings
+- [x] Registrasi & login (email/password)
+- [x] **Sistem role 3 tingkat** (Super Admin, Owner, Member)
+- [x] **Admin panel** — manage user, statistik platform, settings
 - [ ] Setup API Key Google Gemini (BYOK)
 - [ ] Hubungkan akun Telegram (link token)
 - [ ] Buat workspace (Pribadi/Bisnis/Keluarga/Organisasi/Komunitas)
@@ -164,7 +164,7 @@ DuweKu menawarkan **2 model paket harga** berdasarkan penggunaan AI:
 ### 🔵 Future Features (V3+)
 
 - [ ] Program afiliasi (komisi 20%)
-- [ ] Subscription/billing system (plans & pricing)
+- [x] Subscription/billing system (plans & pricing)
 - [ ] Budget planning & goals
 - [ ] Recurring transaction (langganan)
 - [ ] AI insights ("Pengeluaran makanan bulan ini naik 30%")

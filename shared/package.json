@@ -5,7 +5,8 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "dev": "tsc -w"
+        "dev": "tsc -w",
+        "test": "echo \"No tests for shared yet\" && exit 0"
     },
     "dependencies": {
         "zod": "^3.24.2"

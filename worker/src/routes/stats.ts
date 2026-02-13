@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import { eq, and, sql } from 'drizzle-orm';
 import { createDb } from '../db';
-import { transactions, accounts } from '../db/schema';
+import { transactions, accounts, categories } from '../db/schema';
 import { getWorkspaceRole } from '../middleware/auth';
 import { Env } from '../index';
 
@@ -53,15 +53,38 @@ app.get('/', async (c) => {
         ));
 
     // 3. Category Breakdown (Expense)
-    // Requires joining categories?
-    // Or just group by category_id and fetch category names later or join now.
-    // Drizzle join:
-    // const breakdown = await db.select({ 
-    //   category: categories.name, 
-    //   total: sql`sum(transactions.amount)` 
-    // }).from(transactions).leftJoin(categories, ...).groupBy(...)
+    const categoryBreakdown = await db
+        .select({
+            name: categories.name,
+            value: sql<number>`sum(${transactions.amount})`,
+            color: categories.color
+        })
+        .from(transactions)
+        .leftJoin(categories, eq(transactions.category_id, categories.id))
+        .where(and(
+            eq(transactions.workspace_id, workspaceId),
+            eq(transactions.type, 'expense'),
+            sql`${transactions.date} >= ${start}`,
+            sql`${transactions.date} <= ${end}`
+        ))
+        .groupBy(categories.id, categories.name)
+        .orderBy(sql`sum(${transactions.amount}) desc`);
 
-    // Implementation omitted for brevity in this step, but good to have.
+    // 4. Daily Trend
+    const dailyTrend = await db
+        .select({
+            date: transactions.date,
+            income: sql<number>`sum(case when ${transactions.type} = 'income' then ${transactions.amount} else 0 end)`,
+            expense: sql<number>`sum(case when ${transactions.type} = 'expense' then ${transactions.amount} else 0 end)`
+        })
+        .from(transactions)
+        .where(and(
+            eq(transactions.workspace_id, workspaceId),
+            sql`${transactions.date} >= ${start}`,
+            sql`${transactions.date} <= ${end}`
+        ))
+        .groupBy(transactions.date)
+        .orderBy(transactions.date);
 
     return c.json({
         totalBalance,
@@ -69,6 +92,8 @@ app.get('/', async (c) => {
         income: income[0]?.total || 0,
         expense: expense[0]?.total || 0,
         cashFlow: (income[0]?.total || 0) - (expense[0]?.total || 0),
+        categoryBreakdown,
+        dailyTrend
     });
 });
 

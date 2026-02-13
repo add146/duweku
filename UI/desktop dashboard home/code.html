@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>DuweKu - Financial Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round"
+        rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#158c7e", // Teal from the main card
+                        "primary-dark": "#0e6b5e",
+                        secondary: "#ff9f43", // Orange from charts
+                        accent: "#54a0ff", // Blue from charts
+                        danger: "#ff6b6b", // Red for expenses
+                        success: "#1dd1a1", // Green for income
+                        "background-light": "#f3f4f6",
+                        "background-dark": "#111827",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                        "text-light": "#2d3436",
+                        "text-dark": "#e5e7eb",
+                        "text-muted-light": "#636e72",
+                        "text-muted-dark": "#9ca3af",
+                    },
+                    fontFamily: {
+                        display: ["Poppins", "sans-serif"],
+                        mono: ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        'xl': '1.5rem',
+                        '2xl': '2rem',
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.05)',
+                        'card': '0 10px 30px -5px rgba(0, 0, 0, 0.06)',
+                    }
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark transition-colors duration-300">
+    <div class="flex h-screen overflow-hidden">
+        <aside
+            class="w-64 flex-shrink-0 hidden md:flex flex-col bg-surface-light dark:bg-surface-dark border-r border-gray-200 dark:border-gray-700 transition-colors duration-300">
+            <div class="h-20 flex items-center px-8 border-b border-gray-100 dark:border-gray-800">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/30">
+                        D
+                    </div>
+                    <span class="text-2xl font-bold tracking-tight text-text-light dark:text-white">DuweKu</span>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+                <p
+                    class="px-4 text-xs font-semibold text-text-muted-light dark:text-gray-500 uppercase tracking-wider mb-2">
+                    Menu Utama</p>
+                <a class="flex items-center gap-3 px-4 py-3 bg-primary/10 text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">dashboard</span>
+                    Dashboard
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">receipt_long</span>
+                    Transaksi
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">account_balance_wallet</span>
+                    Akun
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">pie_chart</span>
+                    Laporan
+                </a>
+                <p
+                    class="px-4 text-xs font-semibold text-text-muted-light dark:text-gray-500 uppercase tracking-wider mt-8 mb-2">
+                    Workspace</p>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">groups</span>
+                    Tim
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">work_outline</span>
+                    Proyek
+                </a>
+                <p
+                    class="px-4 text-xs font-semibold text-text-muted-light dark:text-gray-500 uppercase tracking-wider mt-8 mb-2">
+                    Sistem</p>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">settings</span>
+                    Pengaturan
+                </a>
+                <a class="flex items-center gap-3 px-4 py-3 text-text-muted-light dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-primary dark:hover:text-primary rounded-xl font-medium transition-colors"
+                    href="#">
+                    <span class="material-icons-round">admin_panel_settings</span>
+                    Admin
+                </a>
+            </div>
+            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors">
+                    <img alt="User Avatar"
+                        class="w-10 h-10 rounded-full border-2 border-white dark:border-gray-600 shadow-sm"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzoeYuqHcD7_qr4kJRGM5CRkybSGhxi20qDLhuiRZVYBLBgXK_j77tAwgqXXKVy2Kyij_pYonf14K8PQTAgj2UssEK29j0m6FFYdSQnc33dvNlIXJpnDNQxLUYp9zaKKh3ItcmurRIjiJzRu-tpamCtCY4atNkdNWXkrDWo6XkpIEn_mEuUDos1goPHAxvnKBW1EnrXik-iNDlDxdBaSnTTMiwe7Z8xua-p2MT9EbGfpyBl3eSNd9S3N1hWuypkoU17AyGm7fJf9yt" />
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-semibold text-text-light dark:text-white truncate">Rian Sastrawan</p>
+                        <p class="text-xs text-text-muted-light dark:text-gray-400 truncate">Free Plan</p>
+                    </div>
+                    <span class="material-icons-round text-gray-400">expand_more</span>
+                </div>
+            </div>
+        </aside>
+        <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+            <header
+                class="h-20 flex items-center justify-between px-6 bg-surface-light/80 dark:bg-surface-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 z-10 sticky top-0">
+                <button class="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <span class="material-icons-round">menu</span>
+                </button>
+                <div class="hidden md:flex items-center gap-4">
+                    <div class="relative group">
+                        <button
+                            class="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-full text-sm font-medium text-gray-700 dark:text-gray-200 shadow-sm hover:shadow-md transition-all">
+                            <span class="w-2 h-2 rounded-full bg-primary"></span>
+                            Pribadi
+                            <span class="material-icons-round text-sm text-gray-400">expand_more</span>
+                        </button>
+                    </div>
+                    <span class="text-gray-300 dark:text-gray-600">/</span>
+                    <h1 class="text-xl font-bold text-text-light dark:text-white">Dashboard Overview</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="relative hidden sm:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                            <span class="material-icons-round text-lg">search</span>
+                        </span>
+                        <input
+                            class="pl-10 pr-4 py-2 w-64 bg-gray-100 dark:bg-gray-800 border-none rounded-xl text-sm focus:ring-2 focus:ring-primary dark:text-gray-200 transition-all"
+                            placeholder="Cari transaksi..." type="text" />
+                    </div>
+                    <button
+                        class="relative p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors">
+                        <span class="material-icons-round">notifications_none</span>
+                        <span
+                            class="absolute top-2 right-2 w-2 h-2 bg-danger rounded-full border-2 border-white dark:border-gray-900"></span>
+                    </button>
+                    <button
+                        class="p-2 text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 dark:hover:bg-gray-700 rounded-full transition-colors"
+                        onclick="document.documentElement.classList.toggle('dark')">
+                        <span class="material-icons-round">light_mode</span>
+                    </button>
+                </div>
+            </header>
+            <div class="flex-1 overflow-y-auto p-4 md:p-8 space-y-8 scroll-smooth pb-24 md:pb-8">
+                <div
+                    class="relative w-full rounded-2xl md:rounded-3xl bg-primary overflow-hidden shadow-xl shadow-primary/20">
+                    <div class="absolute top-0 right-0 p-8 opacity-10">
+                        <span class="material-icons-outlined text-[12rem] text-white">account_balance_wallet</span>
+                    </div>
+                    <div
+                        class="relative z-10 p-6 md:p-10 text-white flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div>
+                            <p class="text-primary-100 text-sm font-medium tracking-wider mb-2 opacity-80 uppercase">
+                                Total Saldo Aktif</p>
+                            <h2 class="text-4xl md:text-5xl font-mono font-medium tracking-tighter mb-4">Rp 5.240.000
+                            </h2>
+                            <div
+                                class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 text-sm font-medium">
+                                <span class="material-icons-round text-sm">trending_up</span>
+                                +Rp 800.000 bulan ini
+                            </div>
+                        </div>
+                        <div class="flex gap-4 w-full md:w-auto">
+                            <button
+                                class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-white text-primary rounded-xl font-semibold shadow-lg hover:bg-gray-50 transition-colors">
+                                <span class="material-icons-round">add</span>
+                                Top Up
+                            </button>
+                            <button
+                                class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-primary-dark/50 text-white rounded-xl font-semibold hover:bg-primary-dark transition-colors backdrop-blur-md">
+                                <span class="material-icons-round">send</span>
+                                Kirim
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-card border border-gray-100 dark:border-gray-700 flex items-center gap-4 hover:translate-y-[-2px] transition-transform duration-300">
+                        <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-icons-round text-2xl">arrow_downward</span>
+                        </div>
+                        <div>
+                            <p
+                                class="text-text-muted-light dark:text-gray-400 text-xs font-semibold uppercase tracking-wide">
+                                Pemasukan</p>
+                            <p class="text-2xl font-bold text-text-light dark:text-white mt-1">8.5jt</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-card border border-gray-100 dark:border-gray-700 flex items-center gap-4 hover:translate-y-[-2px] transition-transform duration-300">
+                        <div class="w-14 h-14 rounded-full bg-danger/10 flex items-center justify-center text-danger">
+                            <span class="material-icons-round text-2xl">arrow_upward</span>
+                        </div>
+                        <div>
+                            <p
+                                class="text-text-muted-light dark:text-gray-400 text-xs font-semibold uppercase tracking-wide">
+                                Pengeluaran</p>
+                            <p class="text-2xl font-bold text-text-light dark:text-white mt-1">3.2jt</p>
+                        </div>
+                    </div>
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-6 rounded-2xl shadow-card border border-gray-100 dark:border-gray-700 flex items-center gap-4 hover:translate-y-[-2px] transition-transform duration-300">
+                        <div class="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center text-accent">
+                            <span class="material-icons-round text-2xl">swap_horiz</span>
+                        </div>
+                        <div>
+                            <p
+                                class="text-text-muted-light dark:text-gray-400 text-xs font-semibold uppercase tracking-wide">
+                                Transfer</p>
+                            <p class="text-2xl font-bold text-text-light dark:text-white mt-1">500rb</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div
+                        class="lg:col-span-1 bg-surface-light dark:bg-surface-dark p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-700 flex flex-col">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-text-light dark:text-white">Per Kategori</h3>
+                            <button class="text-sm font-medium text-primary hover:text-primary-dark">Lihat
+                                Semua</button>
+                        </div>
+                        <div class="relative flex-1 flex items-center justify-center py-4">
+                            <div class="w-48 h-48 relative">
+                                <canvas id="categoryChart"></canvas>
+                                <div
+                                    class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-xs text-gray-400">Top</span>
+                                    <span class="font-bold text-text-light dark:text-white">Makan</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-secondary"></span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-300">Makanan</span>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-500">40%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-accent"></span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-300">Transport</span>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-500">25%</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-primary"></span>
+                                    <span class="text-sm text-gray-600 dark:text-gray-300">Tagihan</span>
+                                </div>
+                                <span class="text-sm font-semibold text-gray-500">20%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="lg:col-span-2 bg-surface-light dark:bg-surface-dark p-6 rounded-3xl shadow-soft border border-gray-100 dark:border-gray-700 flex flex-col">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-text-light dark:text-white">Analisis Bulanan</h3>
+                            <div class="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                                <button
+                                    class="px-3 py-1 bg-white dark:bg-gray-700 shadow-sm rounded-md text-xs font-semibold text-text-light dark:text-white">Pemasukan</button>
+                                <button
+                                    class="px-3 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-primary">Pengeluaran</button>
+                            </div>
+                        </div>
+                        <div class="flex-1 w-full h-64">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="bg-surface-light dark:bg-surface-dark rounded-3xl shadow-soft border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                        <h3 class="text-lg font-bold text-text-light dark:text-white">Transaksi Terbaru</h3>
+                        <div class="flex items-center gap-2">
+                            <button
+                                class="p-2 text-gray-400 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full">
+                                <span class="material-icons-round">filter_list</span>
+                            </button>
+                            <button
+                                class="p-2 text-gray-400 hover:text-primary hover:bg-gray-50 dark:hover:bg-gray-800 rounded-full">
+                                <span class="material-icons-round">search</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead
+                                class="bg-gray-50 dark:bg-gray-800/50 text-xs font-semibold text-text-muted-light dark:text-gray-400 uppercase tracking-wider">
+                                <tr>
+                                    <th class="px-6 py-4">Deskripsi</th>
+                                    <th class="px-6 py-4">Kategori</th>
+                                    <th class="px-6 py-4">Source</th>
+                                    <th class="px-6 py-4">Tanggal</th>
+                                    <th class="px-6 py-4 text-right">Jumlah</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-800 text-sm">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-500">
+                                                <span class="material-icons-round text-lg">restaurant</span>
+                                            </div>
+                                            <span class="font-medium text-text-light dark:text-white">Makan Siang</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded-md bg-secondary/10 text-secondary text-xs font-medium">Makanan</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 text-text-muted-light dark:text-gray-400">
+                                            <span class="material-icons-round text-sm text-blue-500">telegram</span>
+                                            Telegram
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-muted-light dark:text-gray-400">
+                                        12:30 PM
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-mono font-medium text-danger">-Rp 20.000</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-500">
+                                                <span class="material-icons-round text-lg">local_taxi</span>
+                                            </div>
+                                            <span class="font-medium text-text-light dark:text-white">Grab to
+                                                Office</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded-md bg-accent/10 text-accent text-xs font-medium">Transport</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 text-text-muted-light dark:text-gray-400">
+                                            <span class="material-icons-round text-sm text-blue-500">telegram</span>
+                                            Telegram
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-muted-light dark:text-gray-400">
+                                        08:15 AM
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-mono font-medium text-danger">-Rp 45.000</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600">
+                                                <span class="material-icons-round text-lg">lightbulb</span>
+                                            </div>
+                                            <span class="font-medium text-text-light dark:text-white">Token
+                                                Listrik</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded-md bg-primary/10 text-primary text-xs font-medium">Tagihan</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 text-text-muted-light dark:text-gray-400">
+                                            <span class="material-icons-outlined text-sm">smartphone</span>
+                                            Manual
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-muted-light dark:text-gray-400">
+                                        Kemarin
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-mono font-medium text-danger">-Rp 100.000</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-3">
+                                            <div
+                                                class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600">
+                                                <span class="material-icons-round text-lg">account_balance_wallet</span>
+                                            </div>
+                                            <span class="font-medium text-text-light dark:text-white">Refund
+                                                Tokped</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span
+                                            class="px-2 py-1 rounded-md bg-success/10 text-success text-xs font-medium">Refund</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 text-text-muted-light dark:text-gray-400">
+                                            <span class="material-icons-round text-sm text-blue-500">telegram</span>
+                                            Telegram
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 text-text-muted-light dark:text-gray-400">
+                                        Kemarin
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <span class="font-mono font-medium text-success">+Rp 150.000</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-4 border-t border-gray-100 dark:border-gray-700 flex justify-center">
+                        <button class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">Lihat
+                            Semua Transaksi</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script>
+        // Common options for Charts
+        Chart.defaults.font.family = "'Poppins', sans-serif";
+        Chart.defaults.color = '#9ca3af';
+        // Donut Chart
+        const ctxDonut = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxDonut, {
+            type: 'doughnut',
+            data: {
+                labels: ['Makanan', 'Transport', 'Tagihan', 'Lainnya'],
+                datasets: [{
+                    data: [40, 25, 20, 15],
+                    backgroundColor: [
+                        '#ff9f43', // Secondary
+                        '#54a0ff', // Accent
+                        '#158c7e', // Primary
+                        '#e2e8f0'  // Gray
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        padding: 12,
+                        cornerRadius: 8,
+                    }
+                }
+            }
+        });
+        // Bar Chart (Trend)
+        const ctxBar = document.getElementById('trendChart').getContext('2d');
+        // Gradient for bars
+        let gradient = ctxBar.createLinearGradient(0, 0, 0, 400);
+        gradient.addColorStop(0, '#158c7e');
+        gradient.addColorStop(1, '#1dd1a1');
+        new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+                datasets: [{
+                    label: 'Pemasukan',
+                    data: [12, 19, 10, 15, 22, 18, 24],
+                    backgroundColor: gradient,
+                    borderRadius: 4,
+                    barThickness: 20,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(156, 163, 175, 0.1)',
+                            borderDash: [5, 5]
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        padding: 10,
+                        cornerRadius: 6,
+                        displayColors: false,
+                        callbacks: {
+                            label: function (context) {
+                                return 'Rp ' + context.parsed.y + ' jt';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+
+    <nav
+        class="lg:hidden fixed bottom-0 left-0 right-0 z-[999] bg-white dark:bg-surface-dark border-t border-gray-200 dark:border-gray-700 pb-6 pt-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.02)]">
+        <div class="flex justify-around items-end px-2">
+            <a class="flex flex-col items-center gap-1 p-3 text-primary" href="#">
+                <span class="material-icons-round text-2xl">home</span>
+                <span class="text-[10px] font-medium">Home</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                href="#">
+                <span class="material-icons-round text-2xl">pie_chart</span>
+                <span class="text-[10px] font-medium">Laporan</span>
+            </a>
+            <div class="relative -top-5">
+                <button
+                    class="w-14 h-14 rounded-full bg-gradient-to-tr from-primary to-emerald-400 text-white shadow-xl shadow-primary/30 flex items-center justify-center transform active:scale-90 transition-transform hover:shadow-primary/50">
+                    <span class="material-icons-round text-2xl">chat_bubble</span>
+                </button>
+            </div>
+            <a class="flex flex-col items-center gap-1 p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                href="#">
+                <span class="material-icons-round text-2xl">account_balance_wallet</span>
+                <span class="text-[10px] font-medium">Budget</span>
+            </a>
+            <a class="flex flex-col items-center gap-1 p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
+                href="#">
+                <span class="material-icons-round text-2xl">settings</span>
+                <span class="text-[10px] font-medium">Setting</span>
+            </a>
+        </div>
+    </nav>
+</body>
+
+</html>

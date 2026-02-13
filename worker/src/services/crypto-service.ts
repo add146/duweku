@@ -41,43 +41,55 @@ export async function encryptApiKey(apiKey: string, secret: string): Promise<str
 }
 
 
+async function decryptWithIterations(encryptedBundle: string, secret: string, iterations: number): Promise<string> {
+    const bundle = JSON.parse(atob(encryptedBundle));
+    const iv = new Uint8Array(bundle.iv.match(/.{1,2}/g)!.map((b: string) => parseInt(b, 16)));
+    const data = new Uint8Array(bundle.data.match(/.{1,2}/g)!.map((b: string) => parseInt(b, 16)));
+
+    const encoder = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        "raw",
+        encoder.encode(secret),
+        { name: "PBKDF2" },
+        false,
+        ["deriveKey"]
+    );
+
+    const key = await crypto.subtle.deriveKey(
+        {
+            name: "PBKDF2",
+            salt: encoder.encode("duweku-salt"),
+            iterations,
+            hash: "SHA-256",
+        },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["decrypt"]
+    );
+
+    const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv },
+        key,
+        data
+    );
+
+    return new TextDecoder().decode(decrypted);
+}
+
 export async function decryptApiKey(encryptedBundle: string, secret: string): Promise<string> {
+    // Try standard iterations first (100k)
     try {
-        const bundle = JSON.parse(atob(encryptedBundle));
-        const iv = new Uint8Array(bundle.iv.match(/.{1,2}/g)!.map((b: string) => parseInt(b, 16)));
-        const data = new Uint8Array(bundle.data.match(/.{1,2}/g)!.map((b: string) => parseInt(b, 16)));
+        return await decryptWithIterations(encryptedBundle, secret, 100000);
+    } catch (e) {
+        console.log("Decryption with 100k iterations failed, trying 1k fallback...");
+    }
 
-        const encoder = new TextEncoder();
-        const keyMaterial = await crypto.subtle.importKey(
-            "raw",
-            encoder.encode(secret),
-            { name: "PBKDF2" },
-            false,
-            ["deriveKey"]
-        );
-
-        const key = await crypto.subtle.deriveKey(
-            {
-                name: "PBKDF2",
-                salt: encoder.encode("duweku-salt"),
-                iterations: 100000,
-                hash: "SHA-256",
-            },
-            keyMaterial,
-            { name: "AES-GCM", length: 256 },
-            false,
-            ["decrypt"]
-        );
-
-        const decrypted = await crypto.subtle.decrypt(
-            { name: "AES-GCM", iv },
-            key,
-            data
-        );
-
-        return new TextDecoder().decode(decrypted);
+    // Fallback: key may have been encrypted with 1k iterations during migration
+    try {
+        return await decryptWithIterations(encryptedBundle, secret, 1000);
     } catch (error) {
-        console.error("Decryption failed:", error);
-        throw new Error("Failed to decrypt API key");
+        console.error("Decryption failed with both iteration counts:", error);
+        throw new Error("Failed to decrypt API key. Please re-save your key in Settings.");
     }
 }

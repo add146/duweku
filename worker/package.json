@@ -7,11 +7,12 @@
     "dev": "wrangler dev --local",
     "deploy": "wrangler deploy",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "wrangler d1 migrations apply duweku-db --local"
+    "db:migrate": "wrangler d1 migrations apply duweku-db --local",
+    "test": "vitest"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.21.0",
     "@duweku/shared": "*",
+    "@google/generative-ai": "^0.21.0",
     "drizzle-orm": "^0.38.4",
     "grammy": "^1.34.1",
     "hono": "^4.7.4",
@@ -21,10 +22,12 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.12.11",
     "@cloudflare/workers-types": "^4.20250204.0",
+    "@types/uuid": "^10.0.0",
     "drizzle-kit": "^0.30.4",
     "typescript": "^5.7.3",
-    "@types/uuid": "^10.0.0",
-    "wrangler": "^3.105.0"
+    "vitest": "^3.2.4",
+    "wrangler": "^4.64.0"
   }
 }

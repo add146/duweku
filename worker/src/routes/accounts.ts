@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { v4 as uuidv4 } from 'uuid';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, sql } from 'drizzle-orm';
 import { createDb } from '../db';
 import { accounts } from '../db/schema';
 import { getWorkspaceRole } from '../middleware/auth';
@@ -21,6 +21,7 @@ app.get('/', async (c) => {
 
     const data = await db.query.accounts.findMany({
         where: eq(accounts.workspace_id, workspaceId),
+        orderBy: sql`${accounts.is_active} DESC, ${accounts.name} ASC`
     });
 
     return c.json({ data });
@@ -46,6 +47,7 @@ app.post('/', async (c) => {
         balance: balance || 0,
         icon,
         is_default: is_default || false,
+        is_active: true,
     });
 
     return c.json({ id, name, balance }, 201);
@@ -69,8 +71,7 @@ app.put('/:id', async (c) => {
     if (body.type !== undefined) updateData.type = body.type;
     if (body.icon !== undefined) updateData.icon = body.icon;
     if (body.is_default !== undefined) updateData.is_default = body.is_default;
-    // Balance usually not updated directly here, but let's allow it for corrections if needed?
-    // Ideally balance is computed from transactions, but for initial/manual correction it's okay.
+    if (body.is_active !== undefined) updateData.is_active = body.is_active;
     if (body.balance !== undefined) updateData.balance = body.balance;
 
     await db.update(accounts)
@@ -91,7 +92,9 @@ app.delete('/:id', async (c) => {
     const role = await getWorkspaceRole(db, user.id, workspaceId);
     if (role !== 'owner') return c.json({ error: 'Forbidden' }, 403);
 
-    await db.delete(accounts)
+    // Instead of deleting, we set is_active to false (Archive)
+    await db.update(accounts)
+        .set({ is_active: false })
         .where(and(eq(accounts.id, accountId), eq(accounts.workspace_id, workspaceId)));
 
     return c.json({ success: true });

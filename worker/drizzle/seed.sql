@@ -5,6 +5,8 @@ INSERT INTO plans (id, name, slug, ai_mode, price_monthly, price_type, max_works
 ('plan_basic', 'Basic (BYOK)', 'basic-byok', 'byok', 200000, 'one_time', 5, -1, 1, 1),
 ('plan_pro', 'Pro (AI Included)', 'pro-ai', 'global', 30000, 'recurring', 10, -1, 1, 2);
 
+--> statement-breakpoint
+
 -- System Categories (default)
 -- Note: categories usually belong to a workspace. For system defaults, maybe create a template workspace or handle in code?
 -- The schema says workspace_id nullable for system defaults.

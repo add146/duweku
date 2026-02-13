@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import Onboarding from '@/pages/Onboarding';
@@ -13,10 +13,16 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AppLayout from '@/components/layout/AppLayout';
 import { WorkspaceProvider } from '@/context/WorkspaceContext';
 
+import LandingPage from '@/pages/LandingPage';
+
+import { Toaster } from 'sonner';
+
 function App() {
   return (
     <BrowserRouter>
+      <Toaster richColors />
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/onboarding" element={<Onboarding />} />
@@ -35,8 +41,6 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Route>
-
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

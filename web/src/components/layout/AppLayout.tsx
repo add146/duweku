@@ -101,6 +101,21 @@ export default function AppLayout() {
                             {item.label}
                         </Link>
                     ))}
+
+                    {/* Admin Link - Only for super_admin */}
+                    {user?.role === 'super_admin' && (
+                        <Link
+                            to="/admin"
+                            className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-colors hover:bg-muted text-muted-foreground hover:text-primary",
+                                location.pathname === "/admin" && "bg-primary/10 text-primary"
+                            )}
+                            onClick={() => setSidebarOpen(false)}
+                        >
+                            <Users className="h-5 w-5" />
+                            Admin
+                        </Link>
+                    )}
                 </div>
 
                 <div className="p-4 border-t border-border/50">

@@ -25,7 +25,7 @@ Panduan desain antarmuka dan pengalaman pengguna untuk dashboard web DuweKu.
 
 | Nama | Hex | Fungsi |
 |------|-----|--------|
-| **Primary** | `#0D9488` (Teal 600) | CTA buttons, links, active states |
+| **Primary** | `#158c7e` (Teal Custom) | CTA buttons, links, active states |
 | **Primary Light** | `#14B8A6` (Teal 500) | Hover states |
 | **Primary Dark** | `#0F766E` (Teal 700) | Pressed states |
 | **Accent** | `#F59E0B` (Amber 500) | Highlights, badges, income |
@@ -146,6 +146,7 @@ Panduan desain antarmuka dan pengalaman pengguna untuk dashboard web DuweKu.
 │ │  💰 Akun      │ │       Page Content                │ │
 │ │  📊 Laporan   │ │       (dengan detail lebih)       │ │
 │ │  👥 Tim       │ │                                    │ │
+│ │  💳 Pricing   │ │   • Charts side by side            │ │
 │ │              │ │   • Charts side by side            │ │
 │ │  ────────    │ │   • Table dengan kolom lengkap     │ │
 │ │  🏢 Workspace │ │   • Filter bar horizontal         │ │

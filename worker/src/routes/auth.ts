@@ -151,20 +151,40 @@ app.get('/telegram-link', authMiddleware, async (c) => {
         .setExpirationTime('1h')
         .sign(secret);
 
-    // Assuming bot username is formatted in env or hardcoded?
-    // Usually t.me/MyBot?start=TOKEN
-    // We'll return the URL. User prompt must handle opening it.
-    // Env variable for BOT_USERNAME would be nice, but simple return of token + url structure works.
+    // URL Generation:
+    // 1. Try to get username from DB settings
+    // 2. Fallback to Env variable
+    // 3. Fallback to 'DuweKuBot'
+    const db = createDb(c.env.DB);
+    const { settings } = await import('../db/schema');
+    const { eq } = await import('drizzle-orm');
+
+    const setting = await db.query.settings.findFirst({
+        where: eq(settings.key, 'telegram_bot_username')
+    });
+
+    const botUsername = setting?.value || c.env.TELEGRAM_BOT_USERNAME || 'DuweKuBot';
 
     return c.json({
-        url: `https://t.me/${c.env.TELEGRAM_BOT_USERNAME}?start=${linkToken}`,
+        url: `https://t.me/${botUsername}?start=${linkToken}`,
         token: linkToken
     });
 });
 
 app.get('/me', authMiddleware, async (c) => {
     const user = c.get('user');
-    return c.json({ user });
+    // Return user with has_api_key flag, but exclude sensitive fields if needed (though middleware attaches full user)
+    // We strictly should not return password_hash or actual api key
+    const safeUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        plan_id: user.plan_id,
+        ai_mode: user.ai_mode,
+        has_api_key: !!user.gemini_api_key
+    };
+    return c.json({ user: safeUser });
 });
 
 export default app;

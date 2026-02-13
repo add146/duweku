@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { sql, relations } from "drizzle-orm";
 import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 
 // 1. Users
@@ -59,6 +59,7 @@ export const accounts = sqliteTable("accounts", {
     balance: real("balance").default(0).notNull(),
     icon: text("icon"),
     is_default: integer("is_default", { mode: "boolean" }).default(false),
+    is_active: integer("is_active", { mode: "boolean" }).default(true),
     created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -89,6 +90,7 @@ export const transactions = sqliteTable("transactions", {
     date: text("date").notNull(), // ISO date YYYY-MM-DD
     source: text("source", { enum: ["web_manual", "telegram_text", "telegram_image", "api"] }).default("web_manual"),
     status: text("status", { enum: ["confirmed", "pending"] }).default("confirmed").notNull(),
+    batch_id: text("batch_id"),
     created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
 });
 
@@ -118,4 +120,36 @@ export const orders = sqliteTable("orders", {
     paid_at: text("paid_at"),
     created_at: text("created_at").default(sql`(CURRENT_TIMESTAMP)`),
 });
+
+// 10. Global Settings (Super Admin)
+export const settings = sqliteTable("settings", {
+    key: text("key").primaryKey(), // e.g. "gemini_api_key_pro", "payment_gateway_status"
+    value: text("value").notNull(),
+    description: text("description"),
+    updated_at: text("updated_at").default(sql`(CURRENT_TIMESTAMP)`),
+});
+
+// Relations
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+    account: one(accounts, {
+        fields: [transactions.account_id],
+        references: [accounts.id],
+    }),
+    category: one(categories, {
+        fields: [transactions.category_id],
+        references: [categories.id],
+    }),
+    user: one(users, {
+        fields: [transactions.user_id],
+        references: [users.id],
+    }),
+}));
+
+export const accountsRelations = relations(accounts, ({ many }) => ({
+    transactions: many(transactions),
+}));
+
+export const categoriesRelations = relations(categories, ({ many }) => ({
+    transactions: many(transactions),
+}));
 

@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "duweku-db"
-database_id = "local"
+database_id = "779c6243-399f-4f2c-97d0-20769a3daf6f"
 migrations_dir = "drizzle"
 
 # R2 Object Storage (for receipts, exports)

@@ -19,24 +19,33 @@ interface AccountDialogProps {
     onClose: () => void;
     onSuccess: () => void;
     workspaceId: string;
+    initialData?: any; // If provided, we are in Edit mode
 }
 
-export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId }: AccountDialogProps) {
+export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId, initialData }: AccountDialogProps) {
     const [loading, setLoading] = useState(false);
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<AccountForm>({
         resolver: zodResolver(accountSchema),
-        defaultValues: {
+        values: initialData ? {
+            name: initialData.name,
+            type: initialData.type,
+            balance: initialData.balance
+        } : {
             type: 'cash',
             balance: 0
-        }
+        } as any
     });
 
     const onSubmit = async (data: AccountForm) => {
         setLoading(true);
         try {
-            await apiFetch(`/workspaces/${workspaceId}/accounts`, {
-                method: 'POST',
+            const url = initialData
+                ? `/workspaces/${workspaceId}/accounts/${initialData.id}`
+                : `/workspaces/${workspaceId}/accounts`;
+
+            await apiFetch(url, {
+                method: initialData ? 'PUT' : 'POST',
                 body: JSON.stringify(data)
             });
             reset();
@@ -55,7 +64,7 @@ export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-md bg-background rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4">New Account</h2>
+                <h2 className="text-xl font-bold mb-4">{initialData ? 'Edit Account' : 'New Account'}</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>

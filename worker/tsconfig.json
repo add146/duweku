@@ -18,7 +18,7 @@
         "isolatedModules": true,
         "noEmit": true,
         "outDir": "./dist",
-        "rootDir": "./src",
+        "rootDir": ".",
         "baseUrl": ".",
         "paths": {
             "@/*": [
@@ -27,7 +27,8 @@
         }
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts",
+        "test/**/*.ts"
     ],
     "exclude": [
         "node_modules",

@@ -16,14 +16,18 @@ import {
     Bell,
     Shield,
     Banknote,
-    MessageCircle
+    MessageCircle,
+    Loader2,
+    Copy,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 export default function Settings() {
     const [user, setUser] = useState<any>(null);
     const [telegramLink, setTelegramLink] = useState('');
     const [saving, setSaving] = useState(false);
+    const [testing, setTesting] = useState(false);
     const [showApiKey, setShowApiKey] = useState(false);
 
     const { register, handleSubmit, setValue, watch } = useForm();
@@ -55,6 +59,27 @@ export default function Settings() {
         }
     };
 
+    const handleTestConnection = async () => {
+        setTesting(true);
+        try {
+            const res = await apiFetch<{ success: boolean; message?: string; error?: string; steps?: string[] }>('/ai/test', {
+                method: 'POST',
+            });
+            if (res.success) {
+                toast.success(res.message || "Connection successful! AI is ready.");
+            } else {
+                toast.error(res.error || "Connection failed.");
+                console.error("Test steps:", res.steps);
+            }
+        } catch (e: any) {
+            const errorMsg = e?.message || "Connection failed. Check your API configuration.";
+            toast.error(errorMsg);
+            console.error("Test error:", e);
+        } finally {
+            setTesting(false);
+        }
+    };
+
     const onSubmit = async (data: any) => {
         setSaving(true);
         try {
@@ -62,10 +87,10 @@ export default function Settings() {
                 method: 'PUT',
                 body: JSON.stringify(data)
             });
-            alert("Settings saved!");
+            toast.success("Settings saved successfully!");
             fetchProfile();
         } catch (e) {
-            alert("Failed to save settings");
+            toast.error("Failed to save settings");
         } finally {
             setSaving(false);
         }
@@ -144,7 +169,11 @@ export default function Settings() {
                                 {...register('gemini_api_key')}
                                 className="pl-10 pr-12 py-6 font-mono"
                                 type={showApiKey ? "text" : "password"}
-                                placeholder={aiMode === 'byok' ? "Enter new key to update" : "Optional (Global Mode Active)"}
+                                placeholder={
+                                    user.has_api_key
+                                        ? "**************** (Configured)"
+                                        : (aiMode === 'byok' ? "Enter new key to update" : "Optional (Global Mode Active)")
+                                }
                             />
                             <button
                                 type="button"
@@ -157,17 +186,30 @@ export default function Settings() {
                     </div>
 
                     <div className="flex items-center gap-2 px-1">
-                        {/* Mock status for now */}
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]"></div>
-                        <span className="text-xs font-medium text-emerald-600">Connection Active</span>
+                        <div className={cn(
+                            "w-2 h-2 rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)]",
+                            user.has_api_key ? "bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]" : "bg-gray-300"
+                        )}></div>
+                        <span className={cn(
+                            "text-xs font-medium",
+                            user.has_api_key ? "text-emerald-600" : "text-muted-foreground"
+                        )}>
+                            {user.has_api_key ? "Connection Configured" : "No Key Configured"}
+                        </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                        <Button type="button" variant="outline" className="gap-2 rounded-full h-11">
-                            <Zap className="h-5 w-5" />
-                            Test
+                        <Button
+                            type="button"
+                            variant="outline"
+                            className="gap-2 rounded-full h-11"
+                            onClick={handleTestConnection}
+                            disabled={testing || saving}
+                        >
+                            {testing ? <Loader2 className="h-5 w-5 animate-spin" /> : <Zap className="h-5 w-5" />}
+                            {testing ? 'Testing...' : 'Test'}
                         </Button>
-                        <Button type="submit" disabled={saving} className="gap-2 rounded-full h-11 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">
+                        <Button type="submit" disabled={saving || testing} className="gap-2 rounded-full h-11 bg-primary hover:bg-primary/90 shadow-lg shadow-primary/30">
                             <Save className="h-5 w-5" />
                             {saving ? 'Saving...' : 'Save'}
                         </Button>
@@ -234,6 +276,30 @@ export default function Settings() {
                     </a>
                 ) : (
                     <Button disabled className="w-full">Loading Link...</Button>
+                )}
+
+                {telegramLink && (
+                    <div className="mt-4 p-3 bg-muted rounded-lg border border-border">
+                        <p className="text-xs text-muted-foreground mb-2">
+                            Jika tombol di atas tidak berfungsi, salin perintah ini dan kirim ke bot:
+                        </p>
+                        <div className="flex items-center gap-2">
+                            <code className="flex-1 bg-background p-2 rounded text-xs font-mono break-all select-all">
+                                /start {telegramLink.split('=')[1]}
+                            </code>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                    const token = telegramLink.split('=')[1];
+                                    navigator.clipboard.writeText(`/start ${token}`);
+                                    toast.success("Perintah disalin!");
+                                }}
+                            >
+                                <Copy className="h-4 w-4" />
+                            </Button>
+                        </div>
+                    </div>
                 )}
             </section>
         </div>

@@ -13,7 +13,8 @@
     "dev:web": "cd web && npm run dev",
     "build:web": "cd web && npm run build",
     "deploy:worker": "cd worker && npx wrangler deploy",
-    "deploy:web": "cd web && npm run build && npx wrangler pages deploy dist/"
+    "deploy:web": "cd web && npm run build && npx wrangler pages deploy dist/",
+    "test": "npm test --workspaces"
   },
   "keywords": [
     "saas",

@@ -34,8 +34,8 @@ app.get('/', async (c) => {
         limit: 100, // Pagination needed later
         with: {
             // Include related account/category names if needed
-            // account: true,
-            // category: true, 
+            account: true,
+            category: true,
             // user: true,
         }
     });

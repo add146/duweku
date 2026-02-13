@@ -31,7 +31,16 @@ const app = new Hono<{ Bindings: Env; Variables: Variables }>();
 // Middleware
 app.use('*', logger());
 app.use('/api/*', cors({
-    origin: ['http://localhost:5173', 'https://duweku.my.id'],
+    origin: (origin) => {
+        if (!origin) return 'https://duweku.com';
+        // Allow localhost
+        if (origin.includes('localhost')) return origin;
+        // Allow production domain
+        if (origin === 'https://duweku.com' || origin === 'https://www.duweku.com' || origin === 'https://duweku.pages.dev') return origin;
+        // Allow Cloudflare Pages preview URLs
+        if (origin.endsWith('.duweku.pages.dev')) return origin;
+        return 'https://duweku.com';
+    },
     allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
@@ -60,9 +69,11 @@ app.route('/api/bot', botRoutes);
 app.route('/api/plans', planRoutes);
 app.route('/api/webhooks', webhookRoutes);
 app.route('/api/settings', settingsRoutes);
+import membersRoutes from './routes/members';
+app.route('/api/members', membersRoutes);
+import adminRoutes from './routes/admin';
+app.route('/api/admin', adminRoutes);
 // app.route('/api/settings', settingsRoutes);
-// app.route('/api/plans', planRoutes);
-// app.route('/api/admin', adminRoutes);
 // app.route('/api/telegram', telegramRoutes);
 
 // 404 fallback
