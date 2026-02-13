@@ -154,7 +154,7 @@ export default function AppLayout() {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-lg border-t border-border px-4 py-3 pb-8 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-lg border-t border-border px-4 py-3 pb-3 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
                 {navItems.slice(0, 2).map((item) => {
                     const isActive = location.pathname === item.href;
                     return (
