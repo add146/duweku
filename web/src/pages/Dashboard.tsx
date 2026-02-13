@@ -305,7 +305,7 @@ export default function Dashboard() {
                     </div>
                 </>
             ) : (
-                <div>Loading stats...</div>
+                <div>Memuat statistik...</div>
             )}
         </div>
     );

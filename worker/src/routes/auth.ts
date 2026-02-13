@@ -17,7 +17,7 @@ app.post('/register', async (c) => {
     const result = RegisterSchema.safeParse(body);
 
     if (!result.success) {
-        return c.json({ error: 'Validation failed', details: result.error.format() }, 400);
+        return c.json({ error: 'Validasi gagal', details: result.error.format() }, 400);
     }
 
     const { name, email, password } = result.data;
@@ -29,7 +29,7 @@ app.post('/register', async (c) => {
     });
 
     if (existingUser) {
-        return c.json({ error: 'Email already registered' }, 409);
+        return c.json({ error: 'Email sudah terdaftar' }, 409);
     }
 
     // Hash password
@@ -42,7 +42,7 @@ app.post('/register', async (c) => {
 
     if (!defaultPlan) {
         // Fallback or error? better error.
-        return c.json({ error: 'Default plan configuration missing' }, 500);
+        return c.json({ error: 'Konfigurasi paket default hilang' }, 500);
     }
 
     const userId = uuidv4();
@@ -90,7 +90,7 @@ app.post('/register', async (c) => {
 
     } catch (error) {
         console.error('Register error:', error);
-        return c.json({ error: 'Registration failed' }, 500);
+        return c.json({ error: 'Pendaftaran gagal' }, 500);
     }
 });
 
@@ -99,7 +99,7 @@ app.post('/login', async (c) => {
     const result = LoginSchema.safeParse(body);
 
     if (!result.success) {
-        return c.json({ error: 'Invalid input' }, 400);
+        return c.json({ error: 'Input tidak valid' }, 400);
     }
 
     const { email, password } = result.data;
@@ -110,12 +110,12 @@ app.post('/login', async (c) => {
     });
 
     if (!user || user.status !== 'active') {
-        return c.json({ error: 'Invalid credentials' }, 401);
+        return c.json({ error: 'Email atau password salah' }, 401);
     }
 
     const isValid = await verifyPassword(password, user.password_hash);
     if (!isValid) {
-        return c.json({ error: 'Invalid credentials' }, 401);
+        return c.json({ error: 'Email atau password salah' }, 401);
     }
 
     // Generate JWT

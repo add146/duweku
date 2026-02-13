@@ -53,14 +53,14 @@ export default function Accounts() {
         setIsDialogOpen(true);
     };
 
-    if (!selectedWorkspace) return <div>Please select a workspace.</div>;
+    if (!selectedWorkspace) return <div>Harap pilih workspace.</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold tracking-tight">Accounts</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Akun</h2>
                 <div className="flex gap-2">
-                    <Button onClick={() => { setEditingAccount(null); setIsDialogOpen(true); }}>New Account</Button>
+                    <Button onClick={() => { setEditingAccount(null); setIsDialogOpen(true); }}>Akun Baru</Button>
                 </div>
             </div>
 
@@ -74,9 +74,9 @@ export default function Accounts() {
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {loading ? (
-                    <div>Loading...</div>
+                    <div>Memuat...</div>
                 ) : data.length === 0 ? (
-                    <div>No accounts found. Create one to get started.</div>
+                    <div>Akun tidak ditemukan. Buat baru untuk memulai.</div>
                 ) : (
                     data.map((acc) => (
                         <div key={acc.id} className={`rounded-xl border bg-card text-card-foreground shadow p-6 flex flex-col justify-between h-[150px] relative ${!acc.is_active ? 'opacity-50 grayscale' : ''}`}>
@@ -103,7 +103,7 @@ export default function Accounts() {
                                     <h3 className="font-semibold text-lg">{acc.name}</h3>
                                     <span className="text-xs bg-muted px-2 py-1 rounded capitalize">{acc.type}</span>
                                 </div>
-                                {!acc.is_active && <span className="text-[10px] text-destructive font-bold uppercase">Archived</span>}
+                                {!acc.is_active && <span className="text-[10px] text-destructive font-bold uppercase">Terarsipkan</span>}
                             </div>
                             <div className="text-2xl font-bold">
                                 {formatCurrency(acc.balance)}

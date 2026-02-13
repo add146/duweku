@@ -44,13 +44,13 @@ export default function AppLayout() {
     if (!user) return null;
 
     const navItems = [
-        { label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-        { label: 'Accounts', icon: Wallet, href: '/accounts' },
-        { label: 'Transactions', icon: Receipt, href: '/transactions' },
-        { label: 'Reports', icon: BarChart3, href: '/reports' },
-        { label: 'Members', icon: Users, href: '/members' },
-        { label: 'Pricing', icon: CreditCard, href: '/plans' },
-        { label: 'Settings', icon: Settings, href: '/settings' },
+        { label: 'Beranda', icon: LayoutDashboard, href: '/dashboard' },
+        { label: 'Akun', icon: Wallet, href: '/accounts' },
+        { label: 'Transaksi', icon: Receipt, href: '/transactions' },
+        { label: 'Laporan', icon: BarChart3, href: '/reports' },
+        { label: 'Anggota', icon: Users, href: '/members' },
+        { label: 'Paket', icon: CreditCard, href: '/plans' },
+        { label: 'Pengaturan', icon: Settings, href: '/settings' },
     ];
 
     return (
@@ -205,7 +205,7 @@ export default function AppLayout() {
                     )}
                 >
                     <Settings className={cn("h-6 w-6", location.pathname === '/settings' && "fill-primary/20")} />
-                    <span className="text-[10px] font-bold uppercase tracking-tight">Settings</span>
+                    <span className="text-[10px] font-bold uppercase tracking-tight">Pengaturan</span>
                 </Link>
             </div>
 

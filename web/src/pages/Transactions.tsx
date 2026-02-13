@@ -41,23 +41,23 @@ export default function Transactions() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!selectedWorkspace || !confirm("Are you sure?")) return;
+        if (!selectedWorkspace || !confirm("Apakah Anda yakin?")) return;
         try {
             await apiFetch(`/workspaces/${selectedWorkspace.id}/transactions/${id}`, { method: 'DELETE' });
             fetchTransactions(selectedWorkspace.id);
         } catch (e) {
-            alert("Failed to delete");
+            alert("Gagal menghapus");
         }
     };
 
-    if (!selectedWorkspace) return <div>Please select a workspace.</div>;
+    if (!selectedWorkspace) return <div>Harap pilih workspace.</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold tracking-tight">Transactions</h2>
+                <h2 className="text-3xl font-bold tracking-tight">Transaksi</h2>
                 <div className="flex gap-2">
-                    <Button onClick={() => setIsDialogOpen(true)}>Add Transaction</Button>
+                    <Button onClick={() => setIsDialogOpen(true)}>Tambah Transaksi</Button>
                 </div>
             </div>
 
@@ -69,7 +69,7 @@ export default function Transactions() {
             />
 
             <div className="flex gap-4">
-                <Input placeholder="Search description..." className="max-w-sm" />
+                <Input placeholder="Cari deskripsi..." className="max-w-sm" />
             </div>
 
             <div className="rounded-md border bg-card">
@@ -77,12 +77,12 @@ export default function Transactions() {
                     <table className="w-full caption-bottom text-sm text-left">
                         <thead className="[&_tr]:border-b">
                             <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Date</th>
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Description</th>
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Category</th>
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Account</th>
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right">Amount</th>
-                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Actions</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Tanggal</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Deskripsi</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Kategori</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Akun</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground text-right">Jumlah</th>
+                                <th className="h-12 px-4 align-middle font-medium text-muted-foreground">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="[&_tr:last-child]:border-0">
@@ -108,7 +108,7 @@ export default function Transactions() {
                                             {tx.type === 'income' ? '+' : '-'}{formatCurrency(tx.amount)}
                                         </td>
                                         <td className="p-4 align-middle">
-                                            <Button variant="ghost" size="sm" onClick={() => handleDelete(tx.id)}>Del</Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleDelete(tx.id)}>Hapus</Button>
                                         </td>
                                     </tr>
                                 ))

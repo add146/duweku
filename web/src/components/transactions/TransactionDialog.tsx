@@ -71,7 +71,7 @@ export default function TransactionDialog({ isOpen, onClose, onSuccess, workspac
             onClose();
         } catch (e) {
             console.error(e);
-            alert("Failed to save transaction");
+            alert("Gagal menyimpan transaksi");
         } finally {
             setLoading(false);
         }
@@ -82,19 +82,19 @@ export default function TransactionDialog({ isOpen, onClose, onSuccess, workspac
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-md bg-background rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4">New Transaction</h2>
+                <h2 className="text-xl font-bold mb-4">Transaksi Baru</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="flex gap-4">
                         <select {...register('type')} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                            <option value="expense">Expense</option>
-                            <option value="income">Income</option>
+                            <option value="expense">Pengeluaran</option>
+                            <option value="income">Pemasukan</option>
                             <option value="transfer">Transfer</option>
                         </select>
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Amount</label>
+                        <label className="text-sm font-medium">Jumlah</label>
                         <Input
                             type="number"
                             {...register('amount', { valueAsNumber: true })}
@@ -103,35 +103,35 @@ export default function TransactionDialog({ isOpen, onClose, onSuccess, workspac
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Description</label>
+                        <label className="text-sm font-medium">Deskripsi</label>
                         <Input {...register('description')} />
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Account</label>
+                        <label className="text-sm font-medium">Akun</label>
                         <select {...register('account_id')} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                            <option value="">Select Account</option>
+                            <option value="">Pilih Akun</option>
                             {accounts.map(a => <option key={a.id} value={a.id}>{a.name}</option>)}
                         </select>
                         {errors.account_id && <p className="text-xs text-destructive">{errors.account_id.message}</p>}
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Category</label>
+                        <label className="text-sm font-medium">Kategori</label>
                         <select {...register('category_id')} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                            <option value="">Select Category</option>
+                            <option value="">Pilih Kategori</option>
                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                         </select>
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Date</label>
+                        <label className="text-sm font-medium">Tanggal</label>
                         <Input type="date" {...register('date')} />
                     </div>
 
                     <div className="flex justify-end gap-2 mt-6">
-                        <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-                        <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
+                        <Button type="button" variant="outline" onClick={onClose}>Batal</Button>
+                        <Button type="submit" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan'}</Button>
                     </div>
                 </form>
             </div>

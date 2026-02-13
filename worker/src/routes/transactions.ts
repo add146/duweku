@@ -10,7 +10,7 @@ const app = new Hono<{ Bindings: Env; Variables: any }>();
 
 app.get('/', async (c) => {
     const workspaceId = c.req.param('workspaceId');
-    if (!workspaceId) return c.json({ error: 'Workspace ID required' }, 400);
+    if (!workspaceId) return c.json({ error: 'ID Workspace diperlukan' }, 400);
 
     const user = c.get('user');
     const db = createDb(c.env.DB);
@@ -19,7 +19,7 @@ app.get('/', async (c) => {
     const { startDate, endDate, accountId, type } = c.req.query();
 
     const role = await getWorkspaceRole(db, user.id, workspaceId);
-    if (!role) return c.json({ error: 'Forbidden' }, 403);
+    if (!role) return c.json({ error: 'Terlarang (Forbidden)' }, 403);
 
     const conditions = [eq(transactions.workspace_id, workspaceId)];
     if (startDate) conditions.push(sql`${transactions.date} >= ${startDate}`);
@@ -45,19 +45,19 @@ app.get('/', async (c) => {
 
 app.post('/', async (c) => {
     const workspaceId = c.req.param('workspaceId');
-    if (!workspaceId) return c.json({ error: 'Workspace ID required' }, 400);
+    if (!workspaceId) return c.json({ error: 'ID Workspace diperlukan' }, 400);
 
     const user = c.get('user');
     const { account_id, category_id, amount, type, description, date, transfer_to_account_id } = await c.req.json();
     const db = createDb(c.env.DB);
 
     const role = await getWorkspaceRole(db, user.id, workspaceId);
-    if (!role) return c.json({ error: 'Forbidden' }, 403);
+    if (!role) return c.json({ error: 'Terlarang (Forbidden)' }, 403);
 
     // Validations
-    if (!amount || amount <= 0) return c.json({ error: 'Invalid amount' }, 400);
-    if (!account_id) return c.json({ error: 'Account required' }, 400);
-    if (type === 'transfer' && !transfer_to_account_id) return c.json({ error: 'Destination account required' }, 400);
+    if (!amount || amount <= 0) return c.json({ error: 'Jumlah tidak valid' }, 400);
+    if (!account_id) return c.json({ error: 'Akun diperlukan' }, 400);
+    if (type === 'transfer' && !transfer_to_account_id) return c.json({ error: 'Akun tujuan diperlukan' }, 400);
 
     const id = uuidv4();
     const queries: any[] = [];
@@ -114,31 +114,31 @@ app.post('/', async (c) => {
         return c.json({ id, status: 'success' }, 201);
     } catch (err: any) {
         console.error('Transaction error:', err);
-        return c.json({ error: err.message || 'Transaction failed' }, 500);
+        return c.json({ error: err.message || 'Transaksi gagal' }, 500);
     }
 });
 
 app.delete('/:id', async (c) => {
     const workspaceId = c.req.param('workspaceId');
-    if (!workspaceId) return c.json({ error: 'Workspace ID required' }, 400);
+    if (!workspaceId) return c.json({ error: 'ID Workspace diperlukan' }, 400);
 
     const transactionId = c.req.param('id');
     const user = c.get('user');
     const db = createDb(c.env.DB);
 
     const role = await getWorkspaceRole(db, user.id, workspaceId);
-    if (!role) return c.json({ error: 'Forbidden' }, 403);
+    if (!role) return c.json({ error: 'Terlarang (Forbidden)' }, 403);
 
     // Get transaction first to revert balance
     const tx = await db.query.transactions.findFirst({
         where: and(eq(transactions.id, transactionId), eq(transactions.workspace_id, workspaceId)),
     });
 
-    if (!tx) return c.json({ error: 'Not found' }, 404);
+    if (!tx) return c.json({ error: 'Tidak ditemukan' }, 404);
 
     // Check permission: Owner can delete any, Member can delete own?
     if (role !== 'owner' && tx.user_id !== user.id) {
-        return c.json({ error: 'Forbidden: Cannot delete others transaction' }, 403);
+        return c.json({ error: 'Terlarang: Tidak dapat menghapus transaksi orang lain' }, 403);
     }
 
     const queries: any[] = [];
@@ -184,7 +184,7 @@ app.delete('/:id', async (c) => {
         await db.batch(queries as any);
         return c.json({ success: true });
     } catch (err: any) {
-        return c.json({ error: 'Delete failed' }, 500);
+        return c.json({ error: 'Gagal menghapus' }, 500);
     }
 });
 

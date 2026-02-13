@@ -53,7 +53,7 @@ export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId,
             onClose();
         } catch (e) {
             console.error(e);
-            alert("Failed to save account");
+            alert("Gagal menyimpan akun");
         } finally {
             setLoading(false);
         }
@@ -64,28 +64,28 @@ export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId,
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
             <div className="w-full max-w-md bg-background rounded-lg shadow-lg p-6">
-                <h2 className="text-xl font-bold mb-4">{initialData ? 'Edit Account' : 'New Account'}</h2>
+                <h2 className="text-xl font-bold mb-4">{initialData ? 'Edit Akun' : 'Akun Baru'}</h2>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div>
-                        <label className="text-sm font-medium">Name</label>
-                        <Input {...register('name')} placeholder="Cash / Bank BCA" />
+                        <label className="text-sm font-medium">Nama</label>
+                        <Input {...register('name')} placeholder="Tunai / Bank BCA" />
                         {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Type</label>
+                        <label className="text-sm font-medium">Tipe</label>
                         <select {...register('type')} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
-                            <option value="cash">Cash</option>
+                            <option value="cash">Tunai</option>
                             <option value="bank">Bank</option>
                             <option value="ewallet">E-Wallet</option>
-                            <option value="investment">Investment</option>
-                            <option value="other">Other</option>
+                            <option value="investment">Investasi</option>
+                            <option value="other">Lainnya</option>
                         </select>
                     </div>
 
                     <div>
-                        <label className="text-sm font-medium">Initial Balance</label>
+                        <label className="text-sm font-medium">Saldo Awal</label>
                         <Input
                             type="number"
                             {...register('balance', { valueAsNumber: true })}
@@ -93,8 +93,8 @@ export default function AccountDialog({ isOpen, onClose, onSuccess, workspaceId,
                     </div>
 
                     <div className="flex justify-end gap-2 mt-6">
-                        <Button type="button" variant="outline" onClick={onClose}>Cancel</Button>
-                        <Button type="submit" disabled={loading}>{loading ? 'Saving...' : 'Save'}</Button>
+                        <Button type="button" variant="outline" onClick={onClose}>Batal</Button>
+                        <Button type="submit" disabled={loading}>{loading ? 'Menyimpan...' : 'Simpan'}</Button>
                     </div>
                 </form>
             </div>

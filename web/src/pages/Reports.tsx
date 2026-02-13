@@ -62,38 +62,38 @@ export default function Reports() {
         }).format(amount);
     };
 
-    if (!selectedWorkspace) return <div>Please select a workspace.</div>;
+    if (!selectedWorkspace) return <div>Harap pilih workspace.</div>;
 
     return (
         <div className="space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Reports & Analytics</h2>
-                    <p className="text-muted-foreground">Visualize your financial data.</p>
+                    <h2 className="text-3xl font-bold tracking-tight">Laporan & Analitik</h2>
+                    <p className="text-muted-foreground">Visualisasikan data keuangan Anda.</p>
                 </div>
                 <div className="flex gap-2">
                     <Button
                         variant={period === 'this_month' ? 'default' : 'outline'}
                         onClick={() => setPeriod('this_month')}
                     >
-                        This Month
+                        Bulan Ini
                     </Button>
                     <Button
                         variant={period === 'last_30_days' ? 'default' : 'outline'}
                         onClick={() => setPeriod('last_30_days')}
                     >
-                        Last 30 Days
+                        30 Hari Terakhir
                     </Button>
                 </div>
             </div>
 
             {loading ? (
-                <div>Loading stats...</div>
+                <div>Memuat statistik...</div>
             ) : stats ? (
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Income vs Expense Bar Chart */}
                     <div className="col-span-2 rounded-xl border bg-card text-card-foreground shadow p-6">
-                        <h3 className="font-semibold mb-6">Daily Income vs Expense</h3>
+                        <h3 className="font-semibold mb-6">Tren Pemasukan vs Pengeluaran Harian</h3>
                         <div className="h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={stats.dailyTrend || []}>
@@ -116,8 +116,8 @@ export default function Reports() {
                                         labelFormatter={(label) => format(new Date(label), 'dd MMM yyyy')}
                                     />
                                     <Legend />
-                                    <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} name="Income" />
-                                    <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} name="Expense" />
+                                    <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} name="Pemasukan" />
+                                    <Bar dataKey="expense" fill="#EF4444" radius={[4, 4, 0, 0]} name="Pengeluaran" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -125,7 +125,7 @@ export default function Reports() {
 
                     {/* Category Pie Chart */}
                     <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                        <h3 className="font-semibold mb-6">Expense by Category</h3>
+                        <h3 className="font-semibold mb-6">Pengeluaran Per Kategori</h3>
                         <div className="h-[300px] w-full">
                             {stats.categoryBreakdown && stats.categoryBreakdown.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
@@ -160,7 +160,7 @@ export default function Reports() {
                                 </ResponsiveContainer>
                             ) : (
                                 <div className="h-full flex items-center justify-center text-muted-foreground">
-                                    No expense data for this period
+                                    Tidak ada data pengeluaran untuk periode ini
                                 </div>
                             )}
                         </div>
@@ -168,18 +168,18 @@ export default function Reports() {
 
                     {/* Summary Cards */}
                     <div className="rounded-xl border bg-card text-card-foreground shadow p-6">
-                        <h3 className="font-semibold mb-4">Summary</h3>
+                        <h3 className="font-semibold mb-4">Ringkasan</h3>
                         <div className="space-y-4">
                             <div className="flex justify-between items-center pb-2 border-b">
-                                <span className="text-muted-foreground">Total Income</span>
+                                <span className="text-muted-foreground">Total Pemasukan</span>
                                 <span className="font-bold text-green-600">{formatCurrency(stats.income)}</span>
                             </div>
                             <div className="flex justify-between items-center pb-2 border-b">
-                                <span className="text-muted-foreground">Total Expense</span>
+                                <span className="text-muted-foreground">Total Pengeluaran</span>
                                 <span className="font-bold text-red-600">{formatCurrency(stats.expense)}</span>
                             </div>
                             <div className="flex justify-between items-center pt-2">
-                                <span className="text-muted-foreground">Net Cash Flow</span>
+                                <span className="text-muted-foreground">Cash Flow Bersih</span>
                                 <span className={`font-bold ${stats.cashFlow >= 0 ? 'text-blue-600' : 'text-orange-600'}`}>
                                     {formatCurrency(stats.cashFlow)}
                                 </span>
