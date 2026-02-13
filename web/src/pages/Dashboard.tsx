@@ -140,7 +140,7 @@ export default function Dashboard() {
     return (
         <div className="space-y-6">
             <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight">Dashboard Overview</h2>
+                <h2 className="text-3xl font-bold tracking-tight">DuweKu</h2>
             </div>
 
             {stats ? (
@@ -218,7 +218,7 @@ export default function Dashboard() {
                             </div>
 
                             {categoryData.length > 0 ? (
-                                <div className="flex items-center gap-8">
+                                <div className="flex flex-col sm:flex-row items-center gap-8">
                                     {/* Donut Chart */}
                                     <div className="relative flex-shrink-0">
                                         <div
@@ -274,17 +274,19 @@ export default function Dashboard() {
                             {recentTx.length > 0 ? (
                                 <div className="space-y-4">
                                     {recentTx.map((tx) => (
-                                        <div key={tx.id} className="flex items-center gap-4 hover:bg-muted/50 rounded-xl p-2 -mx-2 transition-colors">
-                                            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${getTypeColor(tx.type)}`}>
-                                                {getTypeIcon(tx.type)}
+                                        <div key={tx.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/50 rounded-xl p-2 -mx-2 transition-colors">
+                                            <div className="flex items-center gap-4 min-w-0">
+                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${getTypeColor(tx.type)}`}>
+                                                    {getTypeIcon(tx.type)}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-sm font-medium truncate">{tx.description || 'Transaksi'}</p>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {formatDate(tx.date)} • {getSourceLabel(tx.source)}
+                                                    </p>
+                                                </div>
                                             </div>
-                                            <div className="min-w-0 flex-1">
-                                                <p className="text-sm font-medium truncate">{tx.description || 'Transaksi'}</p>
-                                                <p className="text-xs text-muted-foreground">
-                                                    {formatDate(tx.date)} • {getSourceLabel(tx.source)}
-                                                </p>
-                                            </div>
-                                            <div className={`text-sm font-semibold flex-shrink-0 ${tx.type === 'income' ? 'text-emerald-600' :
+                                            <div className={`text-sm font-semibold flex-shrink-0 sm:static pl-14 sm:pl-0 ${tx.type === 'income' ? 'text-emerald-600' :
                                                 tx.type === 'expense' ? 'text-rose-600' :
                                                     'text-blue-600'
                                                 }`}>
