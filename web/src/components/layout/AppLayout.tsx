@@ -10,16 +10,21 @@ import {
     Menu,
     Users,
     BarChart3,
-    CreditCard
+    CreditCard,
+    Plus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import WorkspaceSwitcher from '@/components/layout/WorkspaceSwitcher';
+import TransactionDialog from '@/components/transactions/TransactionDialog';
+import { useWorkspace } from '@/context/WorkspaceContext';
 
 export default function AppLayout() {
     const navigate = useNavigate();
     const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [user, setUser] = useState<any>(null);
+    const [isTxOpen, setIsTxOpen] = useState(false);
+    const { selectedWorkspace } = useWorkspace();
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -136,7 +141,7 @@ export default function AppLayout() {
 
             {/* Main Content */}
             <div className="flex-1 flex flex-col min-w-0">
-                <header className="h-14 flex items-center px-4 border-b bg-background sticky top-0 z-10">
+                <header className="h-14 hidden md:flex items-center px-4 border-b bg-background sticky top-0 z-10">
                     <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setSidebarOpen(true)}>
                         <Menu className="h-5 w-5" />
                     </Button>
@@ -149,16 +154,43 @@ export default function AppLayout() {
             </div>
 
             {/* Mobile Bottom Navigation */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-lg border-t border-border px-6 py-3 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
-                {navItems.slice(0, 3).map((item) => {
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-lg border-t border-border px-4 py-3 pb-8 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+                {navItems.slice(0, 2).map((item) => {
                     const isActive = location.pathname === item.href;
                     return (
                         <Link
                             key={item.href}
                             to={item.href}
                             className={cn(
-                                "flex flex-col items-center gap-1 transition-all duration-200",
-                                isActive ? "text-primary scale-110" : "text-muted-foreground"
+                                "flex flex-col items-center gap-1 transition-all duration-200 flex-1",
+                                isActive ? "text-primary" : "text-muted-foreground"
+                            )}
+                        >
+                            <item.icon className={cn("h-6 w-6", isActive && "fill-primary/20")} />
+                            <span className="text-[10px] font-bold uppercase tracking-tight">{item.label}</span>
+                        </Link>
+                    )
+                })}
+
+                {/* Central Add Button */}
+                <div className="relative -top-6 flex-1 flex justify-center">
+                    <button
+                        onClick={() => setIsTxOpen(true)}
+                        className="w-14 h-14 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg shadow-green-500/40 hover:bg-green-600 active:scale-95 transition-all"
+                    >
+                        <Plus className="h-8 w-8 stroke-[3px]" />
+                    </button>
+                </div>
+
+                {navItems.slice(2, 3).map((item) => {
+                    const isActive = location.pathname === item.href;
+                    return (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            className={cn(
+                                "flex flex-col items-center gap-1 transition-all duration-200 flex-1",
+                                isActive ? "text-primary" : "text-muted-foreground"
                             )}
                         >
                             <item.icon className={cn("h-6 w-6", isActive && "fill-primary/20")} />
@@ -169,14 +201,23 @@ export default function AppLayout() {
                 <Link
                     to="/settings"
                     className={cn(
-                        "flex flex-col items-center gap-1 transition-all duration-200",
-                        location.pathname === '/settings' ? "text-primary scale-110" : "text-muted-foreground"
+                        "flex flex-col items-center gap-1 transition-all duration-200 flex-1",
+                        location.pathname === '/settings' ? "text-primary" : "text-muted-foreground"
                     )}
                 >
                     <Settings className={cn("h-6 w-6", location.pathname === '/settings' && "fill-primary/20")} />
                     <span className="text-[10px] font-bold uppercase tracking-tight">Settings</span>
                 </Link>
             </div>
+
+            {selectedWorkspace && (
+                <TransactionDialog
+                    isOpen={isTxOpen}
+                    onClose={() => setIsTxOpen(false)}
+                    onSuccess={() => { }}
+                    workspaceId={selectedWorkspace.id}
+                />
+            )}
 
             {/* Overlay */}
             {sidebarOpen && (
