@@ -143,9 +143,39 @@ export default function AppLayout() {
                     <h1 className="ml-4 text-lg font-semibold md:hidden">DuweKu</h1>
                 </header>
 
-                <main className="flex-1 p-4 md:p-8 overflow-y-auto">
+                <main className="flex-1 p-4 md:p-8 overflow-y-auto pb-24 md:pb-8">
                     <Outlet />
                 </main>
+            </div>
+
+            {/* Mobile Bottom Navigation */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-background/80 backdrop-blur-lg border-t border-border px-6 py-3 flex justify-between items-center shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+                {navItems.slice(0, 3).map((item) => {
+                    const isActive = location.pathname === item.href;
+                    return (
+                        <Link
+                            key={item.href}
+                            to={item.href}
+                            className={cn(
+                                "flex flex-col items-center gap-1 transition-all duration-200",
+                                isActive ? "text-primary scale-110" : "text-muted-foreground"
+                            )}
+                        >
+                            <item.icon className={cn("h-6 w-6", isActive && "fill-primary/20")} />
+                            <span className="text-[10px] font-bold uppercase tracking-tight">{item.label}</span>
+                        </Link>
+                    )
+                })}
+                <Link
+                    to="/settings"
+                    className={cn(
+                        "flex flex-col items-center gap-1 transition-all duration-200",
+                        location.pathname === '/settings' ? "text-primary scale-110" : "text-muted-foreground"
+                    )}
+                >
+                    <Settings className={cn("h-6 w-6", location.pathname === '/settings' && "fill-primary/20")} />
+                    <span className="text-[10px] font-bold uppercase tracking-tight">Settings</span>
+                </Link>
             </div>
 
             {/* Overlay */}
