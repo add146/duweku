@@ -229,7 +229,7 @@ export default function Dashboard() {
                                         >
                                             <div className="absolute inset-0 flex items-center justify-center">
                                                 <div className="w-20 h-20 rounded-full bg-card flex flex-col items-center justify-center">
-                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Top</span>
+                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wide">Utama</span>
                                                     <span className="text-sm font-bold truncate max-w-[70px]">{topCategory?.name || '-'}</span>
                                                 </div>
                                             </div>
